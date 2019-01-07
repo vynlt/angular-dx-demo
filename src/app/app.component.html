@@ -1,55 +1,16 @@
-<dx-data-grid 
-    id="gridContainer"
-    [dataSource]="dataSource"
-    keyExpr="ID"
-    [allowColumnReordering]="true"
-    [showBorders]="true"
-    (onEditingStart)="logEvent('EditingStart')"
-    (onInitNewRow)="logEvent('InitNewRow')"
-    (onRowInserting)="logEvent('RowInserting')"
-    (onRowInserted)="logEvent('RowInserted')"
-    (onRowUpdating)="logEvent('RowUpdating')"
-    (onRowUpdated)="logEvent('RowUpdated')"
-    (onRowRemoving)="logEvent('RowRemoving')"
-    (onRowRemoved)="logEvent('RowRemoved')">
-    
-    <dxo-paging [enabled]="true"></dxo-paging>
-    <dxo-editing 
-         mode="row"
-         [allowUpdating]="true"
-         [allowDeleting]="true"
-         [allowAdding]="true">
-    </dxo-editing>
-    
-    <dxi-column dataField="Prefix" caption="Title"></dxi-column>
-    <dxi-column dataField="FirstName"></dxi-column>
-    <dxi-column dataField="LastName"></dxi-column>
-    <dxi-column dataField="Position" [width]="130"></dxi-column>
-    <dxi-column
-        dataField="StateID"
-        caption="State"
-        [width]="125">         
-        <dxo-lookup
-            [dataSource]="states"
-            displayExpr="Name"
-            valueExpr="ID">
-        </dxo-lookup>
-    </dxi-column>
-    <dxi-column
-        dataField="BirthDate"
-        [width]="125"
-        dataType="date">
-    </dxi-column>
-</dx-data-grid>
+<ng-container *ngIf="isAutorized(); else notAuthorized">
+    <app-side-nav-outer-toolbar title="{{appInfo.title}}">
+        <router-outlet></router-outlet>
+        <app-footer>
+            Copyright © 2011-2018 Developer Express Inc.
+            <br/>
+            All trademarks or registered trademarks are property of their respective owners.
+        </app-footer>
+    </app-side-nav-outer-toolbar>
+</ng-container>
 
-<div id="events">
-    <div>
-        <div class="caption">
-            Fired events
-        </div>
-        <dx-button id="clear" text="Clear" (onClick)="clearEvents()"></dx-button>
-    </div>
-    <ul>
-        <li *ngFor="let event of events">{{event}}</li>
-    </ul>
-</div>
+<ng-template #notAuthorized>
+    <app-single-card>
+        <router-outlet></router-outlet>
+    </app-single-card>
+</ng-template>
