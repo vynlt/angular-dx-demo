@@ -1,28 +1,19 @@
 import { Component, HostBinding } from '@angular/core';
 import { AuthService, ScreenService, AppInfoService } from './shared/services';
-import { Service, Employee, State } from './app.service';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss'],
-    providers: [Service]
+    styleUrls: ['./app.component.scss']
 })
 export class AppComponent  {
-  dataSource: Employee[];
-  states: State[];
-  events: Array<string> = [];
-
-  constructor(service: Service) {
-      this.dataSource = service.getEmployees();
-      this.states = service.getStates();
-  }
-  
-  logEvent(eventName) {
-      this.events.unshift(eventName);
+  @HostBinding('class') get getClass() {
+    return Object.keys(this.screen.sizes).filter(cl => this.screen.sizes[cl]).join(' ');
   }
 
-  clearEvents() {
-      this.events = [];
+  constructor(private authService: AuthService, private screen: ScreenService, public appInfo: AppInfoService) { }
+
+  isAutorized() {
+    return this.authService.isLoggedIn;
   }
 }
