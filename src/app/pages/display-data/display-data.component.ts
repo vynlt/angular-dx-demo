@@ -1,15 +1,43 @@
-import { Component } from '@angular/core';
-import 'devextreme/data/odata/store';
+import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+import { map } from 'rxjs/operators';
+import { AreaService } from '../../shared/services/area.service'
+import DataSource from "devextreme/data/data_source";
 
 @Component({
   templateUrl: 'display-data.component.html'
 })
 
-export class DisplayDataComponent {
+export class DisplayDataComponent implements OnInit {
   dataSource: any;
-  priority: any[];
+  isCurrent: any[];
+  exampleDatabase: AreaService | null;
 
-  constructor() {
+
+  ngOnInit() {
+    this.loadData();
+  }
+
+  loadData = () => {
+    this.exampleDatabase = new AreaService(this.http);
+    this.exampleDatabase.getRepoIssues().pipe(
+      map(data => {
+        return data.payload.value;
+      })
+    ).subscribe(data => {
+      this.dataSource = new DataSource({
+        store: {
+            type: "array",
+            key: "Id",
+            data: data
+        }
+    });
+    });
+  }
+
+  constructor(private http: HttpClient, ) {
+    /*
     this.dataSource = {
       store: {
         type: 'odata',
@@ -34,5 +62,15 @@ export class DisplayDataComponent {
       { name: 'Normal', value: 2 },
       { name: 'Low', value: 1 }
     ];
+    */
+
+    
+
+   this.isCurrent = [
+    { name: 'Yes', value: true },
+    { name: 'No', value: false },
+    
+  ];
   }
+  
 }
