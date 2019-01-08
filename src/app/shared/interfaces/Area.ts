@@ -1,7 +1,7 @@
 export interface Area {
     Id: number;
     Name: string;
-    CV: number;
+    CV: string;
     IsCurrent: boolean;
     LastUpdated: string;
 }

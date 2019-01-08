@@ -10,10 +10,16 @@
     [columns]="['Id', 'Name', 'CV', 'IsCurrent', 'LastUpdated']"
     >
 
-    <dxo-paging [pageSize]="10"></dxo-paging>
+    <dxo-paging [pageSize]="7"></dxo-paging>
     <dxo-pager [showPageSizeSelector]="true" [showInfo]="true"></dxo-pager>
-    <dxo-filter-row [visible]="true"></dxo-filter-row>
+    
 
+    <dxo-editing 
+         mode="row"
+         [allowUpdating]="true"
+         [allowDeleting]="true"
+         [allowAdding]="true">
+    </dxo-editing>
     
     <dxi-column
         dataField="Id"
@@ -22,13 +28,13 @@
     </dxi-column>
     <dxi-column
         dataField="Name"
-        [width]="190"
         caption="Name"
         [hidingPriority]="8">
     </dxi-column>
     <dxi-column
         dataField="CV"
         caption="CV"
+        dataType="string"
         [hidingPriority]="6">
     </dxi-column>
     <dxi-column
@@ -43,7 +49,6 @@
     </dxi-column>
     <dxi-column
         dataField="LastUpdated"
-        [width]="125"
         dataType="date">
     </dxi-column>
 

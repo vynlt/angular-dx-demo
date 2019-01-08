@@ -21,19 +21,16 @@ export class DisplayDataComponent implements OnInit {
 
   loadData = () => {
     this.exampleDatabase = new AreaService(this.http);
-    this.exampleDatabase.getRepoIssues().pipe(
-      map(data => {
-        return data.payload.value;
-      })
-    ).subscribe(data => {
+    this.exampleDatabase.getRepoIssues().subscribe(data => {
       this.dataSource = new DataSource({
         store: {
             type: "array",
             key: "Id",
-            data: data
+            data: data.payload.value
         }
     });
     });
+    
   }
 
   constructor(private http: HttpClient, ) {
