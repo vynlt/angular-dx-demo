@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
-import { map } from 'rxjs/operators';
+import { DxDataGridComponent, } from 'devextreme-angular';
 import { AreaService } from '../../shared/services/area.service'
 import DataSource from "devextreme/data/data_source";
 
@@ -10,10 +9,11 @@ import DataSource from "devextreme/data/data_source";
 })
 
 export class DisplayDataComponent implements OnInit {
+  @ViewChild(DxDataGridComponent) dataGrid: DxDataGridComponent;
   dataSource: any;
   isCurrent: any[];
   exampleDatabase: AreaService | null;
-
+  selectedItemKeys: any[] = [];
 
   ngOnInit() {
     this.loadData();
@@ -24,16 +24,40 @@ export class DisplayDataComponent implements OnInit {
     this.exampleDatabase.getRepoIssues().subscribe(data => {
       this.dataSource = new DataSource({
         store: {
-            type: "array",
-            key: "Id",
-            data: data.payload.value
+          type: "array",
+          key: "Id",
+          data: data.payload.value
         }
+      });
     });
-    });
-    
+
   }
 
-  constructor(private http: HttpClient, ) {
+  addNew(event: any) {
+    const newArea = { Id: 0, Name: event.data.Name, CV: event.data.CV, IsCurrent: event.data.IsCurrent, LastUpdated: null };
+    this.dataService.addItem(newArea).subscribe(data => {
+      this.dataSource.store().remove(event.key)
+      this.dataSource.store().insert(data.payload)
+      this.dataGrid.instance.refresh();
+    })
+  }
+
+  updateArea(event: any){
+    const newArea = { Id: event.key, Name: event.data.Name, CV: event.data.CV, IsCurrent: event.data.IsCurrent, LastUpdated: (new Date()).toJSON() };
+    this.dataService.updateItem(newArea).subscribe(() => {
+      console.log("Update sucess")
+    })
+  }
+
+  removeArea(event: any){
+    this.dataService.deleteItem(event.data.Id).subscribe(data => {
+      if(data.payload.value){
+        this.dataSource.store().remove(event.key)
+      }
+    })
+  }
+
+  constructor(private http: HttpClient, public dataService: AreaService) {
     /*
     this.dataSource = {
       store: {
@@ -61,13 +85,13 @@ export class DisplayDataComponent implements OnInit {
     ];
     */
 
-    
 
-   this.isCurrent = [
-    { name: 'Yes', value: true },
-    { name: 'No', value: false },
-    
-  ];
+
+    this.isCurrent = [
+      { name: 'Yes', value: true },
+      { name: 'No', value: false },
+
+    ];
   }
-  
+
 }
